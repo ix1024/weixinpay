@@ -1,4 +1,4 @@
-# 微信支付
+# 微信小程序支付
 
 [![npm version](https://badge.fury.io/js/weixinpay.svg)](http://badge.fury.io/js/weixinpay)
 
@@ -8,6 +8,8 @@
 ## Usage
 
 > var weixinpay = require('weixinpay');
+
+### 创建统一下单，获取订单信息
 
     router.get('/wxpay', function(req, res, next) {
         var order = req.query.order || 'bookingNos';
@@ -37,7 +39,7 @@
 
     });
 
-    ## response 
+### response 
 
     {
         return_code: "SUCCESS",
@@ -51,3 +53,17 @@
         package: "",
         paySign: ""
     }
+
+### 调用小程序支付方法
+
+    wx.requestPayment({
+       'timeStamp': '',
+       'nonceStr': '',
+       'package': '',
+       'signType': 'MD5',
+       'paySign': '',
+       'success':function(res){
+       },
+       'fail':function(res){
+       }
+    })
