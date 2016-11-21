@@ -1,0 +1,26 @@
+{
+  "name": "weixinpay",
+  "version": "1.0.2",
+  "description": "weixin pay",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lengjh/weixinpay.git"
+  },
+  "keywords": [
+    "weixin",
+    "pay",
+    "wxpay",
+    "weixinpay"
+  ],
+  "author": "kingwell leng",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lengjh/weixinpay/issues"
+  },
+  "homepage": "https://github.com/lengjh/weixinpay#readme",
+  "dependencies": {}
+}
