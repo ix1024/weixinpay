@@ -1,7 +1,7 @@
 {
   "name": "weixinpay",
-  "version": "1.0.2",
-  "description": "weixin pay",
+  "version": "1.0.12",
+  "description": "微信小程序支付，创建统一订单，调用支付",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -11,10 +11,21 @@
     "url": "git+https://github.com/lengjh/weixinpay.git"
   },
   "keywords": [
+    "支付",
+    "微信支付",
+    "微信小程序支付",
+    "微信",
+    "微信sdk",
+    "JSAPI",
     "weixin",
     "pay",
     "wxpay",
-    "weixinpay"
+    "weixin-pay",
+    "weixinpay",
+    "wx-payment",
+    "weixin-payment",
+    "weixinpayment",
+    "payment"
   ],
   "author": "kingwell leng",
   "license": "ISC",
@@ -22,5 +33,9 @@
     "url": "https://github.com/lengjh/weixinpay/issues"
   },
   "homepage": "https://github.com/lengjh/weixinpay#readme",
-  "dependencies": {}
+  "dependencies": {
+    "md5": "*",
+    "request": "^2.79.0",
+    "xml2js": "^0.4.17"
+  }
 }
