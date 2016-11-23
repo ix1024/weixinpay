@@ -2,60 +2,110 @@
 
 [![npm version](https://badge.fury.io/js/weixinpay.svg)](http://badge.fury.io/js/weixinpay)
 
-## install 
-> npm install weixinpay
+## 安装
 
-## Usage
+    npm install weixinpay --save
 
-> var weixinpay = require('weixinpay');
+## 使用
 
-### 创建统一下单，获取订单信息
+    var weixinpay = require('weixinpay');
 
-    router.get('/wxpay', function(req, res, next) {
+
+    var weixinpay = new WeiXinPay({
+       // pfx: fs.readFileSync('xxx/xxx/apiclient_cert.p12'),可选，退款需要
+        appid: config.WXSetting.appid,//微信小程序appid
+        openid: config.WXSetting.openid,//用户openid
+        mch_id: config.WXSetting.mch_id,//商户帐号ID
+        partner_key: config.WXSetting.secret,//秘钥
+    });
+
+
+### 创建统一下单
+
+
+
+    router.get('/unifiedorder', function(req, res, next) {
+
         var order = req.query.order || 'bookingNos';
+        var totalFee = req.query.totalFee || 1;
         var ip = req.ip.replace('::ffff:', '');
-        var appid = '';
-        var secret = '';
-        var mch_id = '';
-        var openid = '';
 
-        var unifiedorder = new weixinpay.Unifiedorder({
-            appid: appid, //微信小程序AppID
-            key: secret, //key为在微信商户平台(pay.weixin.qq.com)-->账户设置-->API安全-->密钥设置  
-            attach: '测试描述', //支付信息描述
-            body: 'App支付测试', //
-            mch_id: mch_id, //账户ID
-            openid: openid, //用户OpenID
-            bookingNo: order, //订单号
-            total_fee: 10, //支付金额，单位：分
-            trade_type: 'JSAPI', //支付类型 JSAPI，NATIVE，APP
-            notify_url: 'https://xxx.xxx.xxx/', //通知地址
-            ip: ip, // 用户IP地址
-            complete: function(reponse, body) {
+        weixinpay
+            .createUnifiedOrder({
+                body: '支付测试ddddddddddddddd',
+                out_trade_no: order,
+                total_fee: totalFee,
+                spbill_create_ip: ip,
+                notify_url: 'https://xxx.xxx.com/',
+                trade_type: 'JSAPI',
+                product_id: '1234567890'
+            }, function(body) {
                 res.send(body);
-            }
+            });
+    });
 
+
+#### response 1 正常
+    
+    {
+        return_code: "SUCCESS",
+        return_msg: "OK",
+        appid: "xae2ad8c364555262x",
+        mch_id: "2209909803",
+        nonce_str: "GB3qnPyB41ofpLR9",
+        sign: "6674254B6sA9823803D1D64A86721EFB",
+        result_code: "SUCCESS",
+        prepay_id: "wx202613221881546ce5e4a1f70798435680",
+        trade_type: "JSAPI"
+    }
+
+#### response 2订单重复
+
+    {
+        return_code: "SUCCESS",
+        return_msg: "OK",
+        appid: "xae2ad8c364555262x",
+        mch_id: "2209909803",
+        nonce_str: "NxwTR38TS7u3rLaZ",
+        sign: "6674254B6sA9823803D1D64A86721EFB",
+        result_code: "FAIL",
+        err_code: "OUT_TRADE_NO_USED",
+        err_code_des: "商户订单号重复"
+    }
+
+
+ 
+
+### 查寻订单
+
+
+
+    router.get('/orderquery', function(req, res, next) {
+       var order = req.query.order || 'bookingNos';
+        wxpay.queryOrder({
+            transaction_id: order
+        }, function(err, order) {
+            console.log(order);
+            res.send(order);
+        });
+    });
+
+
+### 关闭订单
+
+
+    router.get('/closeorder', function(req, res, next) {
+        var order = req.query.order || 'bookingNos';
+        weixinpay.closeorder({
+            transaction_id: order
+        }, function(body) {
+            res.send(body);
         });
 
     });
 
-### response 
-
-    {
-        return_code: "SUCCESS",
-        err_code: "",
-        err_code_des: "",
-        return_msg: "OK",
-        appId: "",
-        timeStamp: "1479728322",
-        nonceStr: "yrrutvhmvgta9k9",
-        signType: "MD5",
-        package: "",
-        paySign: ""
-    }
-
 ### 调用小程序支付方法
-
+    
     wx.requestPayment({
        'timeStamp': '',
        'nonceStr': '',
