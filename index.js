@@ -187,6 +187,32 @@ WeiXinPay
 			});
 		});
 
-	});
+	})	/**
+	 * @description 企业转账到零钱
+	 * @param  {Object} param
+	 * @param  {Function} fn) callback
+	 * @return {Object} Constructor
+	 */
+	.add('enterpriseTransfer', function(param, fn) {
+		var that = this;
+		param.mch_appid = this.mch_appid;
+		param.openid = this.openid;
+		param.mchid = this.mchid;
+		param.nonce_str = param.nonce_str || that.createNonceStr();
+		param.sign = that.sign(param);
+		request({
+			url: this.url.transfer,
+			method: 'POST',
+			body: builder.buildObject(param),
+			agentOptions: {
+				pfx: that.pfx,
+				passphrase: that.mchid
+			}
+		}, function(err, response, body) {
+			parseString(body, function(err, result) {
+				fn(that.parseWXReturnXML(result));
+			});
+		});
 
+	});
 module.exports = WeiXinPay;
