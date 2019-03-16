@@ -46,7 +46,8 @@ WXPayUrl.add('url', {
 	refund: 'https://api.mch.weixin.qq.com/pay/refund', //申请退款
 	refundquery: 'https://api.mch.weixin.qq.com/pay/refundquery', //查询退款
 	downloadbill: 'https://api.mch.weixin.qq.com/pay/downloadbill', //下载对账单
-	report: 'https://api.mch.weixin.qq.com/pay/report' //交易保障
+	report: 'https://api.mch.weixin.qq.com/pay/report', //交易保障
+	transfer: 'https://api.mch.weixin.qq.com/mmpaymkttransfers/promotion/transfers', //企业转账到零钱
 });
 /**
  * @description 微信支付工具类函数
@@ -187,7 +188,8 @@ WeiXinPay
 			});
 		});
 
-	})	/**
+	})
+	/**
 	 * @description 企业转账到零钱
 	 * @param  {Object} param
 	 * @param  {Function} fn) callback
