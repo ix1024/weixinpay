@@ -46,7 +46,8 @@ WXPayUrl.add('url', {
 	refund: 'https://api.mch.weixin.qq.com/pay/refund', //申请退款
 	refundquery: 'https://api.mch.weixin.qq.com/pay/refundquery', //查询退款
 	downloadbill: 'https://api.mch.weixin.qq.com/pay/downloadbill', //下载对账单
-	report: 'https://api.mch.weixin.qq.com/pay/report' //交易保障
+	report: 'https://api.mch.weixin.qq.com/pay/report', //交易保障
+	transfer: 'https://api.mch.weixin.qq.com/mmpaymkttransfers/promotion/transfers', //企业转账到零钱
 });
 /**
  * @description 微信支付工具类函数
@@ -171,7 +172,7 @@ WeiXinPay
 	 * @param  {Function} fn) callback
 	 * @return {Object} Constructor
 	 */
-	.add('closeorder', function(param, fn) {
+	.add('closeOrder', function(param, fn) {
 		var that = this;
 		param.appid = this.appid;
 		param.mch_id = this.mch_id;
@@ -187,6 +188,89 @@ WeiXinPay
 			});
 		});
 
-	});
+	})
+	/**
+	 * @description 申请退款
+	 * @param  {Object} param
+	 * @param  {Function} fn) callback
+	 * @return {Object} Constructor
+	 */
+	.add('refund', function(param, fn) {
+		var that = this;
+		var ops = param || {};
+		var nonce_str = that.createNonceStr();
 
+		ops.appid = that.appid;
+		ops.openid = that.openid;
+		ops.mch_id = that.mch_id;
+		ops.nonce_str = nonce_str;
+		ops.sign = that.sign(ops);
+		request({
+			url: that.url.refund,
+			method: 'POST',
+			body: builder.buildObject(ops),
+			agentOptions: {
+				pfx: that.pfx,
+				passphrase: that.mch_id
+			}
+		}, function(err, response, body) {
+			parseString(body, function(err, result) {
+				fn(that.parseWXReturnXML(result));
+			});
+		});
+		return that;
+	})
+	/**
+	 * @description 查寻退款
+	 * @param  {Object} param
+	 * @param  {Function} fn) callback
+	 * @return {Object} Constructor
+	 */
+	.add('queryRefund', function(param, fn) {
+		var that = this;
+		param.nonce_str = param.nonce_str || that.createNonceStr();
+
+		param.appid = that.appid;
+		param.mch_id = that.mch_id;
+		param.sign = that.sign(param);
+
+		request({
+			url: that.url.refundquery,
+			method: 'POST',
+			body: builder.buildObject(param)
+		}, function(err, response, body) {
+			parseString(body, function(err, result) {
+				fn(that.parseWXReturnXML(result));
+			});
+		});
+		return that;
+	})
+	/**
+	 * @description 企业转账到零钱
+	 * @param  {Object} param
+	 * @param  {Function} fn) callback
+	 * @return {Object} Constructor
+	 */
+	.add('enterpriseTransfer', function(param, fn) {
+		var that = this;
+		param.mch_appid = this.mch_appid;
+		param.openid = this.openid;
+		param.mchid = this.mchid;
+		param.nonce_str = param.nonce_str || that.createNonceStr();
+		param.sign = that.sign(param);
+		request({
+			url: this.url.transfer,
+			method: 'POST',
+			body: builder.buildObject(param),
+			agentOptions: {
+				pfx: that.pfx,
+				passphrase: that.mchid
+			}
+		}, function(err, response, body) {
+			parseString(body, function(err, result) {
+				fn(that.parseWXReturnXML(result));
+			});
+		});
+
+	});
 module.exports = WeiXinPay;
